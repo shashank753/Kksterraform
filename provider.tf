@@ -12,11 +12,11 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-terraform {
-  required_providers {
-    kubernetes = {
-      source = "hashicorp/kubernetes"
-      version = "2.32.0"
-    }
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"  # Adjust as needed
   }
+}
+provider "kubernetes" {
+  config_path = "~/.kube/config"  # Adjust if your kubeconfig is in a different location
 }
