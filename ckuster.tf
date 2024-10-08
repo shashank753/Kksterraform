@@ -1,18 +1,11 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
 
-  cluster_name    =  "democluster"
+  cluster_name    =  var.democluster
   cluster_version = "1.30"
   subnet_ids  = module.vpc.private_subnets
 
   cluster_endpoint_public_access  = true
-
-  cluster_addons = {
-    coredns                = {}
-    eks-pod-identity-agent = {}
-    kube-proxy             = {}
-    vpc-cni                = {}
-  }
 
   vpc_id                   = module.vpc.vpc_id
 
@@ -20,12 +13,12 @@ module "eks" {
     example = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       ami_type       = "AL2023_x86_64_STANDARD"
-      instance_types = ["t2.micro"]
+      instance_types = ["t3.medium"]
       vpc_security_group_ids = [aws_security_group.all_worker_mgmt.id]
 
-      min_size     = 2
+      min_size     = 1
       max_size     = 4
-      desired_size = 2
+      desired_size = 1
     }
   }
 
@@ -50,9 +43,8 @@ module "eks" {
       }
     }
   }
-
-  tags = {
-    Environment = "dev"
-    Terraform   = "true"
+   tags = {
+    "kubernetes.io/cluster/${var.democluster}" = "shared"
   }
+  
 }

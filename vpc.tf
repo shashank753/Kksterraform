@@ -11,9 +11,20 @@ module "vpc" {
   enable_nat_gateway = true
   single_nat_gateway  = true
   enable_vpn_gateway = false
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 
-  tags = {
-    Terraform = "true"
-    Environment = "dev"
+   tags = {
+    "kubernetes.io/cluster/${var.democluster}" = "shared"
+  }
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${var.democluster}" = "shared"
+    "kubernetes.io/role/elb"                      = "1"
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${var.democluster}" = "shared"
+    "kubernetes.io/role/internal-elb"             = "1"
   }
 }
